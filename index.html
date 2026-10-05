@@ -50,7 +50,7 @@
   .header-title{ font-size:16px; font-weight:700; color:var(--text); }
   .header-sub{ font-size:11px; color:var(--muted); margin-top:2px; }
   .header-left { display:flex; flex-direction:column; }
-  .header-right { display:flex; gap:6px; flex-wrap:wrap; }
+  .header-right { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
   .icon-btn{
     height:32px; padding:0 10px; border-radius:16px;
     border:1px solid var(--border); background:var(--card-bg);
@@ -67,6 +67,7 @@
     overflow-x:auto; flex-shrink:0;
     scrollbar-width:none;
     background:var(--bg);
+    min-height:36px;
   }
   .tag-bar::-webkit-scrollbar { display:none; }
   .tag-chip {
@@ -255,7 +256,7 @@
     <div class="field"><label>标题</label><input id="mTitle" placeholder="如：线上面试了科世达机械工程师"></div>
     <div class="field"><label>详细记录（选填）</label><textarea id="mDesc" placeholder="记录详细过程、数据、结论…"></textarea></div>
     <div class="field">
-      <label>标签（回车确认，可多个）</label>
+      <label>标签（回车确认，可多个，完全自定义）</label>
       <div class="tag-input-wrap" id="tagInputWrap">
         <input id="tagInput" placeholder="输入标签…">
       </div>
@@ -289,9 +290,9 @@ function defaultData() {
   const t2 = new Date(today); t2.setDate(today.getDate() - 3);
   return {
     logs: [
-      { id: uid(), date: today.toISOString().slice(0,10), time: '21:59', title: '项目启动会议', desc: '确认了非标设备的设计指标、交期节点与预算范围。', image: '', tags: ['工作', '会议'] },
-      { id: uid(), date: t1.toISOString().slice(0,10), time: '18:50', title: '整理以前的日志', desc: '决定重新开始记录每日进展。', image: '', tags: ['生活'] },
-      { id: uid(), date: t2.toISOString().slice(0,10), time: '16:32', title: '带娃去万达广场', desc: '结果发生了小意外。', image: '', tags: ['带娃'] }
+      { id: uid(), date: today.toISOString().slice(0,10), time: '21:59', title: '项目启动会议', desc: '确认了非标设备的设计指标、交期节点与预算范围。', image: '', tags: [] },
+      { id: uid(), date: t1.toISOString().slice(0,10), time: '18:50', title: '整理以前的日志', desc: '决定重新开始记录每日进展。', image: '', tags: [] },
+      { id: uid(), date: t2.toISOString().slice(0,10), time: '16:32', title: '带娃去万达广场', desc: '结果发生了小意外。', image: '', tags: [] }
     ]
   };
 }
@@ -302,7 +303,6 @@ function loadState() {
     if (raw) { 
       const d = JSON.parse(raw); 
       if (d && d.logs) {
-        // 兼容旧数据：给日志补上 tags 字段
         d.logs.forEach(l => { if (!l.tags) l.tags = []; });
         return d; 
       }
@@ -314,8 +314,8 @@ function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(st
 
 let state = loadState();
 let editingId = null;
-let currentFilterTag = null; // 当前筛选的标签
-let editingTags = []; // 编辑弹窗中正在编辑的标签列表
+let currentFilterTag = null;
+let editingTags = [];
 
 const themeBtn = document.getElementById('themeToggle');
 function applyTheme(theme) {
@@ -359,7 +359,6 @@ function esc(s) {
    ========================================================= */
 function renderTagBar() {
   const tagBar = document.getElementById('tagBar');
-  // 收集所有标签及其数量
   const tagCount = {};
   state.logs.forEach(log => {
     (log.tags || []).forEach(t => {
@@ -469,9 +468,7 @@ const tagSuggestions = document.getElementById('tagSuggestions');
 let currentImageBase64 = '';
 
 function renderTagPills() {
-  // 清除已有的 pill（保留 input）
   tagInputWrap.querySelectorAll('.tag-pill').forEach(p => p.remove());
-  // 在 input 前插入 pill
   editingTags.forEach((tag, i) => {
     const pill = document.createElement('span');
     pill.className = 'tag-pill';
@@ -497,15 +494,16 @@ tagInput.addEventListener('keydown', (e) => {
     if (v && !editingTags.includes(v)) {
       editingTags.push(v);
       renderTagPills();
+      renderSuggestions();
     }
     tagInput.value = '';
   } else if (e.key === 'Backspace' && !tagInput.value && editingTags.length > 0) {
     editingTags.pop();
     renderTagPills();
+    renderSuggestions();
   }
 });
 
-// 标签建议（已用过的标签）
 function renderSuggestions() {
   const allTags = new Set();
   state.logs.forEach(log => (log.tags || []).forEach(t => allTags.add(t)));
@@ -541,7 +539,6 @@ function openModal(title, log = null) {
     mTime.value = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
     mTitle.value = ''; mDesc.value = ''; currentImageBase64 = '';
     editingTags = [];
-    // 如果是按标签筛选状态，自动带上当前标签
     if (currentFilterTag) editingTags.push(currentFilterTag);
   }
   tagInput.value = '';
@@ -600,7 +597,6 @@ document.getElementById('mSave').onclick = () => {
   if (!title) { alert('请输入标题'); return; }
   if (!mDate.value) { alert('请选择日期'); return; }
   
-  // 把输入框里还没回车的标签也加上
   const pending = tagInput.value.trim();
   if (pending && !editingTags.includes(pending)) editingTags.push(pending);
   
@@ -672,10 +668,24 @@ importFileInput.onchange = (e) => {
   importFileInput.value = '';
 };
 
+/* =========================================================
+   重置（需手动输入确认文字）
+   ========================================================= */
 document.getElementById('resetBtn').onclick = () => {
-  if (!confirm('确定清空所有数据并恢复示例吗？')) return;
+  const answer = prompt(
+    '⚠️ 重置会清空所有日志数据，且不可恢复。\n\n' +
+    '如果确定要重置，请手动输入以下文字：\n' +
+    '我知道重置会把所有内容清空'
+  );
+  if (answer !== '我知道重置会把所有内容清空') {
+    if (answer !== null) alert('❌ 输入不正确，重置已取消。');
+    return;
+  }
   state = defaultData();
-  saveState(); render();
+  currentFilterTag = null;
+  saveState();
+  render();
+  alert('✅ 已重置为示例数据。');
 };
 
 render();
