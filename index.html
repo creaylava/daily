@@ -2,180 +2,215 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>🌰 时间线日志</title>
 <style>
   :root{
-    --bg:#f7f5f2; --card-bg:#ffffff; --text:#2e2a26; --muted:#8c8377;
-    --accent:#c8662f; --border:#e2dbd1; --input-bg:#fdfcfa;
-    --timeline-line:#dcd5cb;
+    --bg:#f4f5f7; --card-bg:#ffffff; --text:#1c1c1e; --muted:#8e8e93;
+    --accent:#3b82f6; --border:#e5e5ea; --input-bg:#ffffff;
+    --line:#e5e5ea; --icon-bg:#eef2f7; --icon-color:#3b82f6;
   }
-  body.dark {
-    --bg:#121212; --card-bg:#1e1e1e; --text:#e0e0e0; --muted:#9e9e9e;
-    --accent:#e07b39; --border:#444444; --input-bg:#2d2d2d;
-    --timeline-line:#333333;
+  @media (prefers-color-scheme: dark) {
+    :root{
+      --bg:#000000; --card-bg:#1c1c1e; --text:#f2f2f7; --muted:#8e8e93;
+      --accent:#0a84ff; --border:#2c2c2e; --input-bg:#1c1c1e;
+      --line:#2c2c2e; --icon-bg:#1c2c40; --icon-color:#0a84ff;
+    }
+  }
+  body.light{
+    --bg:#f4f5f7; --card-bg:#ffffff; --text:#1c1c1e; --muted:#8e8e93;
+    --accent:#3b82f6; --border:#e5e5ea; --input-bg:#ffffff;
+    --line:#e5e5ea; --icon-bg:#eef2f7; --icon-color:#3b82f6;
+  }
+  body.dark{
+    --bg:#000000; --card-bg:#1c1c1e; --text:#f2f2f7; --muted:#8e8e93;
+    --accent:#0a84ff; --border:#2c2c2e; --input-bg:#1c1c1e;
+    --line:#2c2c2e; --icon-bg:#1c2c40; --icon-color:#0a84ff;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
     height:100vh; overflow:hidden; display:flex; flex-direction:column;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-    background:var(--bg); color:var(--text); transition:.3s;
+    background:var(--bg); color:var(--text); transition:background .3s, color .3s;
+    -webkit-tap-highlight-color: transparent;
   }
-  
-  header{
-    display:flex; align-items:center; padding:10px 20px; background:var(--card-bg);
-    border-bottom:1px solid var(--border); gap:10px; z-index:10; flex-shrink:0;
-    box-shadow:0 2px 5px rgba(0,0,0,.05); flex-wrap: wrap;
-  }
-  header h1{font-size:16px; font-weight:700; margin-right:auto;}
-  .btn{
-    border:1px solid var(--border); background:var(--card-bg); color:var(--text);
-    padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; transition:.15s; font-family:inherit;
-    white-space:nowrap;
-  }
-  .btn:hover{background:var(--input-bg);}
-  .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
-  .btn.primary:hover{opacity:.9;}
-  .btn.danger{color:#d0453a; border-color:#f0cfcc;}
-  .btn.icon{padding:7px 10px;}
-  .btn.small{padding:4px 8px; font-size:12px;}
 
-  .timeline-container {
-    flex:1; overflow-y:auto; padding:30px 20px;
-    display:flex; flex-direction:column; align-items:center;
+  /* 顶栏 */
+  .app-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; background:var(--bg); z-index:10; flex-shrink:0;
+    border-bottom:1px solid var(--border);
   }
-  .timeline {
-    width:100%; max-width:680px; position:relative;
-    padding-left:30px;
+  .header-title{
+    font-size:17px; font-weight:700; color:var(--text);
   }
-  .timeline::before {
-    content:""; position:absolute; left:9px; top:0; bottom:0; width:2px;
-    background:var(--timeline-line); border-radius:1px;
+  .header-sub{
+    font-size:12px; color:var(--muted); margin-top:2px;
   }
-  .timeline-item {
-    position:relative; margin-bottom:30px;
-    animation: fadeIn 0.3s ease-out;
+  .header-left { display:flex; flex-direction:column; }
+  .header-right { display:flex; gap:8px; }
+  .icon-btn{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid var(--border); background:var(--card-bg);
+    color:var(--text); display:flex; align-items:center; justify-content:center;
+    font-size:15px; cursor:pointer; transition:.15s;
   }
-  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+  .icon-btn:active{transform:scale(.9);}
 
-  .timeline-dot {
-    position:absolute; left:-25px; top:6px; width:14px; height:14px;
-    background:var(--accent); border-radius:50%; border:3px solid var(--card-bg);
-    box-shadow:0 1px 3px rgba(0,0,0,.2); z-index:2;
+  /* 日志列表 */
+  .log-list {
+    flex:1; overflow-y:auto; padding:8px 0;
+    -webkit-overflow-scrolling: touch;
   }
-  .timeline-dot.dot-inner { background:var(--card-bg); border-color:var(--accent); }
+  .log-item {
+    display:flex; align-items:flex-start;
+    padding:12px 16px; gap:14px;
+    border-bottom:1px solid var(--border);
+    cursor:pointer; transition:background .15s;
+  }
+  .log-item:hover { background:var(--card-bg); }
+  .log-item:active { background:var(--card-bg); }
 
-  .log-card {
-    background:var(--card-bg); border-radius:12px; padding:16px;
-    box-shadow:0 2px 8px rgba(0,0,0,.06); border:1px solid var(--border);
-    transition:.2s;
-  }
-  .log-card:hover { box-shadow:0 4px 15px rgba(0,0,0,.1); }
-
-  .log-header {
-    display:flex; justify-content:space-between; align-items:flex-start;
-    margin-bottom:8px;
-  }
+  /* 左侧日期时间 */
   .log-date {
-    font-size:12px; color:var(--accent); font-weight:600; background:rgba(200,102,47,.1);
-    padding:2px 8px; border-radius:6px;
+    width:72px; flex-shrink:0; text-align:right;
+    display:flex; flex-direction:column; align-items:flex-end; gap:2px;
+    padding-top:2px;
   }
-  .log-actions {
-    display:flex; gap:6px; opacity:0; transition:.15s;
+  .log-time {
+    font-size:13px; font-weight:600; color:var(--text);
+    font-variant-numeric: tabular-nums;
   }
-  .log-card:hover .log-actions { opacity:1; }
-  .log-actions button {
-    background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px; padding:2px;
-  }
-  .log-actions button:hover { color:var(--text); }
-  .log-actions button.delete-btn:hover { color:#d0453a; }
-
-  .log-title { font-size:16px; font-weight:700; margin-bottom:6px; line-height:1.4; }
-  .log-desc { font-size:14px; line-height:1.6; color:var(--text); white-space:pre-wrap; word-break:break-word; }
-  .log-image {
-    max-width:100%; max-height:280px; border-radius:8px; margin-top:10px;
-    display:block; border:1px solid var(--border); object-fit:contain;
+  .log-day {
+    font-size:11px; color:var(--muted);
+    font-variant-numeric: tabular-nums;
   }
 
-  .empty-state { text-align:center; color:var(--muted); padding:80px 20px; font-size:14px; }
+  /* 中间图标 */
+  .log-icon {
+    width:28px; height:28px; border-radius:50%;
+    background:var(--icon-bg); color:var(--icon-color);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; flex-shrink:0; margin-top:1px;
+  }
 
-  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:100; padding:20px; }
+  /* 右侧标题 */
+  .log-body {
+    flex:1; min-width:0;
+  }
+  .log-title {
+    font-size:15px; font-weight:600; color:var(--text);
+    line-height:1.4;
+    overflow:hidden; text-overflow:ellipsis;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  }
+  .log-desc {
+    font-size:12px; color:var(--muted); margin-top:4px;
+    overflow:hidden; text-overflow:ellipsis;
+    display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical;
+  }
+  .log-thumb {
+    width:44px; height:44px; border-radius:8px; object-fit:cover;
+    flex-shrink:0; margin-left:8px;
+  }
+
+  /* 日期分组标题 */
+  .group-header {
+    padding:14px 16px 6px 16px;
+    font-size:11px; font-weight:700; color:var(--muted);
+    letter-spacing:1px;
+    background:var(--bg);
+    position:sticky; top:0; z-index:5;
+  }
+
+  /* 空状态 */
+  .empty-state {
+    text-align:center; color:var(--muted); padding:80px 20px;
+    font-size:13px; line-height:2;
+  }
+
+  /* 悬浮加号 */
+  .fab {
+    position:fixed; bottom:80px; right:20px;
+    width:54px; height:54px; border-radius:50%;
+    background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px; box-shadow:0 4px 15px rgba(59,130,246,.4);
+    cursor:pointer; z-index:30; transition:transform .15s;
+    border:none;
+  }
+  .fab:active { transform:scale(.9); }
+
+  /* 弹窗 */
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:100; padding:20px; }
   .overlay.show{display:flex;}
   .modal{
-    background:var(--card-bg); border-radius:14px; width:100%; max-width:480px;
-    padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.25); max-height:90vh; overflow-y:auto;
-    animation:pop .16s ease-out;
+    background:var(--card-bg); border-radius:16px; width:100%; max-width:460px;
+    padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.4); max-height:90vh; overflow-y:auto;
+    animation:pop .2s ease-out; border:1px solid var(--border);
   }
-  @keyframes pop{from{transform:translateY(8px); opacity:0;} to{transform:none; opacity:1;}}
-  .m-title{font-size:17px; font-weight:600; margin-bottom:15px;}
-  .field{margin-bottom:14px;}
-  .field label{display:block; font-size:12px; color:var(--muted); margin-bottom:5px;}
+  @keyframes pop{from{transform:translateY(10px) scale(.96); opacity:0;} to{transform:none; opacity:1;}}
+  .m-title{font-size:17px; font-weight:700; margin-bottom:15px; color:var(--text);}
+  .field{margin-bottom:12px;}
+  .field label{display:block; font-size:11px; color:var(--muted); margin-bottom:5px; font-weight:600;}
   .modal input, .modal textarea {
-    width:100%; border:1px solid var(--border); border-radius:8px;
-    padding:8px 10px; font-size:14px; font-family:inherit; color:var(--text);
+    width:100%; border:1px solid var(--border); border-radius:10px; padding:10px;
+    font-size:14px; font-family:inherit; color:var(--text);
     background:var(--input-bg); outline:none; transition:.15s;
   }
-  .modal input:focus, .modal textarea:focus { border-color:var(--accent); background:var(--card-bg); }
-  .modal textarea { height:100px; resize:vertical; }
-  .modal-actions{display:flex; gap:8px; margin-top:15px; align-items:center;}
-
-  .file-upload { 
-    display: inline-block; padding:6px 12px; background:var(--input-bg); 
-    border:1px dashed var(--border); border-radius:8px; cursor:pointer; 
-    font-size:13px; color:var(--muted); text-align:center; width:100%;
+  .modal input:focus, .modal textarea:focus { border-color:var(--accent); }
+  .modal textarea { height:90px; resize:none; }
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .modal-actions{display:flex; gap:10px; margin-top:16px; align-items:center;}
+  .btn{
+    border:1px solid var(--border); background:var(--card-bg); color:var(--text);
+    padding:10px 16px; border-radius:10px; font-size:14px; cursor:pointer;
+    transition:.15s; font-family:inherit; flex:1; text-align:center;
   }
-  .file-upload:active { background:var(--border); }
-  #mImage { display: none; }
+  .btn:active{opacity:.7;}
+  .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .btn.danger{color:#ef4444; border-color:#ef4444; flex:0 0 auto;}
+  .file-upload {
+    display:inline-block; padding:8px 12px; background:var(--input-bg);
+    border:1px dashed var(--border); border-radius:10px; cursor:pointer;
+    font-size:12px; color:var(--muted); text-align:center; width:100%;
+  }
   .img-preview-container { position:relative; margin-top:8px; display:none; }
-  .img-preview { max-width:100%; max-height:150px; border-radius:6px; border:1px solid var(--border); }
-  .remove-img-btn { 
-    position:absolute; top:5px; right:5px; background:rgba(0,0,0,.6); color:#fff; 
+  .img-preview { max-width:100%; max-height:140px; border-radius:8px; }
+  .remove-img-btn {
+    position:absolute; top:5px; right:5px; background:rgba(0,0,0,.6); color:#fff;
     border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; font-size:14px;
   }
-
-  @media (max-width: 480px) {
-    .timeline { padding-left:24px; }
-    .timeline-dot { left:-19px; width:12px; height:12px; }
-    .log-title { font-size:15px; }
-    header h1 { display: none; } /* 手机上隐藏标题，留出空间给按钮 */
-  }
+  #mImage { display:none; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🌰 时间线日志</h1>
-  <button class="btn primary" id="addLogBtn">＋ 添加日志</button>
-  <button class="btn" id="exportBtn">导出Excel</button>
-  <!-- 新增：备份和恢复 -->
-  <button class="btn small" id="backupBtn">📥 备份(JSON)</button>
-  <button class="btn small" id="restoreBtn">📤 恢复(JSON)</button>
-  
-  <button class="btn icon" id="themeToggle" title="切换深色/浅色">🌙</button>
-  <button class="btn danger" id="resetBtn">重置</button>
-</header>
-
-<div class="timeline-container" id="timelineContainer">
-  <div class="timeline" id="timeline"></div>
+<div class="app-header">
+  <div class="header-left">
+    <div class="header-title">🌰 时间线日志</div>
+    <div class="header-sub" id="todayDisplay">加载中...</div>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn" id="themeToggle" title="切换主题">🌓</button>
+  </div>
 </div>
+
+<div class="log-list" id="logList"></div>
+
+<button class="fab" id="fabAdd">+</button>
 
 <div class="overlay" id="overlay">
   <div class="modal">
     <div class="m-title" id="modalTitle">添加日志</div>
-    <div class="field">
-      <label>日期</label>
-      <input type="date" id="mDate">
+    <div class="grid2">
+      <div class="field"><label>日期</label><input type="date" id="mDate"></div>
+      <div class="field"><label>时间</label><input type="time" id="mTime"></div>
     </div>
+    <div class="field"><label>标题</label><input id="mTitle" placeholder="如：线上面试了科世达机械工程师"></div>
+    <div class="field"><label>详细记录（选填）</label><textarea id="mDesc" placeholder="记录详细过程、数据、结论…"></textarea></div>
     <div class="field">
-      <label>标题</label>
-      <input id="mTitle" placeholder="如：设备调试异常、方案评审通过">
-    </div>
-    <div class="field">
-      <label>详细记录</label>
-      <textarea id="mDesc" placeholder="记录详细过程、数据、结论…"></textarea>
-    </div>
-    <div class="field">
-      <label>插入照片（✨ 支持大图自动压缩）</label>
+      <label>插入照片（✨ 自动压缩）</label>
       <label for="mImage" class="file-upload" id="uploadLabel">📷 点击选择本地图片</label>
       <input type="file" id="mImage" accept="image/*">
       <div class="img-preview-container" id="imgPreviewContainer">
@@ -185,32 +220,28 @@
     </div>
     <div class="modal-actions">
       <button class="btn danger" id="mDelete">删除</button>
-      <div style="flex:1"></div>
       <button class="btn" id="mCancel">取消</button>
       <button class="btn primary" id="mSave">保存</button>
     </div>
   </div>
 </div>
 
-<!-- 隐藏的导入文件输入框 -->
-<input type="file" id="restoreFileInput" accept=".json" style="display:none;">
-
 <script>
-const STORAGE_KEY = 'timeline-log-v1';
+const STORAGE_KEY = 'timeline-log-v3';
 const THEME_KEY = 'timeline-log-theme';
 const uid = () => Math.random().toString(36).slice(2, 10);
 
 function defaultData() {
   const today = new Date();
+  const t1 = new Date(today); t1.setDate(today.getDate() - 1);
+  const t2 = new Date(today); t2.setDate(today.getDate() - 3);
+  const t3 = new Date(today); t3.setDate(today.getDate() - 5);
   return {
     logs: [
-      {
-        id: uid(),
-        date: today.toISOString().slice(0, 10),
-        title: '项目启动会议',
-        desc: '确认了非标设备的设计指标、交期节点与预算范围。\n下一步：输出概念设计方案。',
-        image: ''
-      }
+      { id: uid(), date: today.toISOString().slice(0,10), time: '21:59', title: '线上面试了科世达机械工程师', desc: '面试过程很顺利，问了一些关于非标设备的问题。', image: '' },
+      { id: uid(), date: t1.toISOString().slice(0,10), time: '18:50', title: '20250526日记', desc: '今天整理了以前的日志，决定重新开始记录。', image: '' },
+      { id: uid(), date: t2.toISOString().slice(0,10), time: '16:32', title: '娃拉屎在万达', desc: '带娃去万达广场，结果发生了小意外。', image: '' },
+      { id: uid(), date: t3.toISOString().slice(0,10), time: '20:25', title: '娃', desc: '记录一下娃的成长。', image: '' }
     ]
   };
 }
@@ -222,56 +253,92 @@ function loadState() {
   } catch (e) {}
   return defaultData();
 }
-function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { alert('存储空间不足！'); } }
+function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} }
 
 let state = loadState();
 let editingId = null;
 
+// 主题切换
 const themeBtn = document.getElementById('themeToggle');
 function applyTheme(theme) {
-  if (theme === 'dark') { document.body.classList.add('dark'); themeBtn.textContent = '☀️'; }
-  else { document.body.classList.remove('dark'); themeBtn.textContent = '🌙'; }
+  if (theme === 'light') { document.body.classList.add('light'); document.body.classList.remove('dark'); }
+  else if (theme === 'dark') { document.body.classList.add('dark'); document.body.classList.remove('light'); }
+  else { document.body.classList.remove('light'); document.body.classList.remove('dark'); }
 }
 const savedTheme = localStorage.getItem(THEME_KEY);
-if (savedTheme) { applyTheme(savedTheme); } else {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyTheme(prefersDark ? 'dark' : 'light');
-}
+if (savedTheme) applyTheme(savedTheme);
+
 themeBtn.onclick = () => {
-  const isDark = document.body.classList.contains('dark');
-  const t = isDark ? 'light' : 'dark';
-  applyTheme(t); localStorage.setItem(THEME_KEY, t);
+  const current = localStorage.getItem(THEME_KEY) || 'auto';
+  let next;
+  if (current === 'auto') next = 'light';
+  else if (current === 'light') next = 'dark';
+  else next = 'auto';
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+  themeBtn.textContent = next === 'auto' ? '🌓' : next === 'light' ? '☀️' : '🌙';
 };
+themeBtn.textContent = (savedTheme === 'light') ? '☀️' : (savedTheme === 'dark') ? '🌙' : '🌓';
+
+/* =========================================================
+   渲染日志列表
+   ========================================================= */
+const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.floor((today - d) / 86400000);
+  if (diff === 0) return '今天';
+  if (diff === 1) return '昨天';
+  if (diff === 2) return '前天';
+  return `${d.getMonth()+1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+}
 
 function render() {
-  const timeline = document.getElementById('timeline');
+  const list = document.getElementById('logList');
   if (!state.logs.length) {
-    timeline.innerHTML = '<div class="empty-state">还没有日志，点击右上角「添加日志」记录第一条吧 ✨</div>';
+    list.innerHTML = '<div class="empty-state">还没有日志<br>点击右下角 + 记录第一条吧 ✨</div>';
     saveState();
     return;
   }
-  const sortedLogs = [...state.logs].sort((a, b) => b.date.localeCompare(a.date));
-  timeline.innerHTML = sortedLogs.map((log, index) => {
-    const dotClass = index % 2 === 0 ? 'timeline-dot' : 'timeline-dot dot-inner';
-    const imgHtml = log.image ? `<img src="${log.image}" class="log-image" alt="附图">` : '';
-    return `
-      <div class="timeline-item" data-id="${log.id}">
-        <div class="${dotClass}"></div>
-        <div class="log-card">
-          <div class="log-header">
-            <span class="log-date">${log.date}</span>
-            <div class="log-actions">
-              <button class="edit-btn" data-id="${log.id}" title="编辑">✏️</button>
-              <button class="delete-btn" data-id="${log.id}" title="删除">✕</button>
-            </div>
-          </div>
-          <div class="log-title">${esc(log.title)}</div>
-          <div class="log-desc">${esc(log.desc)}</div>
-          ${imgHtml}
+
+  // 按日期时间倒序
+  const sortedLogs = [...state.logs].sort((a, b) => {
+    const dateCompare = b.date.localeCompare(a.date);
+    if (dateCompare !== 0) return dateCompare;
+    return (b.time || '').localeCompare(a.time || '');
+  });
+
+  // 按日期分组
+  let lastDate = '';
+  let html = '';
+  sortedLogs.forEach(log => {
+    if (log.date !== lastDate) {
+      const d = new Date(log.date);
+      html += `<div class="group-header">${formatDate(log.date)}</div>`;
+      lastDate = log.date;
+    }
+    
+    const thumb = log.image ? `<img class="log-thumb" src="${log.image}" alt="">` : '';
+    const desc = log.desc ? `<div class="log-desc">${esc(log.desc)}</div>` : '';
+    html += `
+      <div class="log-item" data-id="${log.id}">
+        <div class="log-date">
+          <div class="log-time">${log.time || ''}</div>
+          <div class="log-day">${new Date(log.date).getMonth()+1}/${new Date(log.date).getDate()}</div>
         </div>
+        <div class="log-icon">⚓</div>
+        <div class="log-body">
+          <div class="log-title">${esc(log.title)}</div>
+          ${desc}
+        </div>
+        ${thumb}
       </div>
     `;
-  }).join('');
+  });
+  
+  list.innerHTML = html;
   saveState();
 }
 
@@ -279,8 +346,16 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// 更新顶栏日期
+const now = new Date();
+document.getElementById('todayDisplay').textContent = `${now.getMonth()+1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
+
+/* =========================================================
+   新增 / 编辑 / 删除
+   ========================================================= */
 const overlay = document.getElementById('overlay');
 const mDate = document.getElementById('mDate');
+const mTime = document.getElementById('mTime');
 const mTitle = document.getElementById('mTitle');
 const mDesc = document.getElementById('mDesc');
 const mImage = document.getElementById('mImage');
@@ -292,11 +367,16 @@ function openModal(title, log = null) {
   document.getElementById('modalTitle').textContent = title;
   if (log) {
     editingId = log.id;
-    mDate.value = log.date; mTitle.value = log.title; mDesc.value = log.desc;
+    mDate.value = log.date;
+    mTime.value = log.time || '00:00';
+    mTitle.value = log.title;
+    mDesc.value = log.desc || '';
     currentImageBase64 = log.image || '';
   } else {
     editingId = null;
-    mDate.value = new Date().toISOString().slice(0, 10);
+    const n = new Date();
+    mDate.value = n.toISOString().slice(0,10);
+    mTime.value = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
     mTitle.value = ''; mDesc.value = ''; currentImageBase64 = '';
   }
   if (currentImageBase64) {
@@ -309,10 +389,12 @@ function openModal(title, log = null) {
 }
 
 function closeModal() { overlay.classList.remove('show'); editingId = null; mImage.value = ''; }
-document.getElementById('addLogBtn').onclick = () => openModal('添加日志');
+
+document.getElementById('fabAdd').onclick = () => openModal('添加日志');
 document.getElementById('mCancel').onclick = closeModal;
 overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
+// 图片压缩
 mImage.onchange = (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -349,7 +431,15 @@ document.getElementById('mSave').onclick = () => {
   const title = mTitle.value.trim();
   if (!title) { alert('请输入标题'); return; }
   if (!mDate.value) { alert('请选择日期'); return; }
-  const logData = { date: mDate.value, title: title, desc: mDesc.value.trim(), image: currentImageBase64 };
+  
+  const logData = {
+    date: mDate.value,
+    time: mTime.value || '00:00',
+    title: title,
+    desc: mDesc.value.trim(),
+    image: currentImageBase64
+  };
+
   if (editingId) {
     const log = state.logs.find(l => l.id === editingId);
     if (log) Object.assign(log, logData);
@@ -366,80 +456,12 @@ document.getElementById('mDelete').onclick = () => {
   closeModal(); render();
 };
 
-document.getElementById('timeline').addEventListener('click', (e) => {
-  const editBtn = e.target.closest('.edit-btn');
-  const deleteBtn = e.target.closest('.delete-btn');
-  if (editBtn) {
-    const log = state.logs.find(l => l.id === editBtn.dataset.id);
-    if (log) openModal('编辑日志', log);
-  }
-  if (deleteBtn) {
-    if (confirm('确定删除这条日志吗？')) {
-      state.logs = state.logs.filter(l => l.id !== deleteBtn.dataset.id); render();
-    }
-  }
+document.getElementById('logList').addEventListener('click', (e) => {
+  const item = e.target.closest('.log-item');
+  if (!item) return;
+  const log = state.logs.find(l => l.id === item.dataset.id);
+  if (log) openModal('编辑日志', log);
 });
-
-/* =========================================================
-   核心新增：备份 (JSON) 和 恢复 (JSON) 逻辑
-   ========================================================= */
-document.getElementById('exportBtn').onclick = () => {
-  let csvContent = "\uFEFF日期,标题,详细记录,有无图片\n";
-  const sortedLogs = [...state.logs].sort((a, b) => a.date.localeCompare(b.date));
-  sortedLogs.forEach(log => {
-    const hasImage = log.image ? '有' : '无';
-    const cleanDesc = (log.desc || '').replace(/\n/g, ' ').replace(/"/g, '""');
-    csvContent += [`"${log.date}"`, `"${log.title}"`, `"${cleanDesc}"`, `"${hasImage}"`].join(",") + "\n";
-  });
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob); link.download = '时间线日志导出.csv'; link.click(); URL.revokeObjectURL(link.href);
-};
-
-// 1. 备份为 JSON 文件
-document.getElementById('backupBtn').onclick = () => {
-  const dataStr = JSON.stringify(state, null, 2);
-  const blob = new Blob([dataStr], { type: 'application/json' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `时间线日志备份_${new Date().toISOString().slice(0,10)}.json`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-};
-
-// 2. 从 JSON 文件恢复
-const restoreFileInput = document.getElementById('restoreFileInput');
-document.getElementById('restoreBtn').onclick = () => restoreFileInput.click();
-
-restoreFileInput.onchange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    try {
-      const importedData = JSON.parse(ev.target.result);
-      if (importedData && Array.isArray(importedData.logs)) {
-        if (confirm(`恢复备份会覆盖当前数据，确定要导入吗？\n（共包含 ${importedData.logs.length} 条日志）`)) {
-          state = importedData;
-          saveState();
-          render();
-          alert('✅ 数据恢复成功！');
-        }
-      } else {
-        alert('❌ 文件格式错误：这不是有效的时间线日志备份文件。');
-      }
-    } catch (err) {
-      alert('❌ 读取失败：文件可能已损坏。');
-    }
-  };
-  reader.readAsText(file);
-  restoreFileInput.value = '';
-};
-
-document.getElementById('resetBtn').onclick = () => {
-  if (!confirm('确定清空所有数据并恢复示例吗？')) return;
-  state = defaultData(); render();
-};
 
 render();
 </script>
