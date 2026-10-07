@@ -39,9 +39,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* 顶栏 */
   .app-header{
-    padding:10px 16px; background:var(--bg); z-index:10; flex-shrink:0;
+    padding:10px 14px; background:var(--bg); z-index:10; flex-shrink:0;
     border-bottom:1px solid var(--border);
   }
   .header-top {
@@ -56,18 +55,16 @@
     border:1px solid var(--border); background:var(--card-bg);
     color:var(--text); display:flex; align-items:center; justify-content:center;
     font-size:12px; cursor:pointer; transition:.15s; white-space:nowrap;
+    font-family:inherit;
   }
   .icon-btn:active{transform:scale(.95);}
   .icon-btn.primary{ background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
   .icon-btn.danger{ color:#ef4444; border-color:#ef4444; }
 
-  /* 标签筛选栏 */
   .tag-bar {
-    display:flex; gap:6px; padding:8px 16px 4px;
+    display:flex; gap:6px; padding:8px 14px 4px;
     overflow-x:auto; flex-shrink:0;
-    scrollbar-width:none;
-    background:var(--bg);
-    min-height:36px;
+    scrollbar-width:none; background:var(--bg); min-height:36px;
   }
   .tag-bar::-webkit-scrollbar { display:none; }
   .tag-chip {
@@ -75,24 +72,22 @@
     background:var(--tag-bg); color:var(--tag-text);
     font-size:12px; font-weight:600;
     cursor:pointer; white-space:nowrap;
-    border:none; transition:.15s;
+    border:none; transition:.15s; font-family:inherit;
   }
   .tag-chip:active{transform:scale(.95);}
   .tag-chip.active { background:var(--tag-active-bg); color:var(--tag-active-text); }
 
-  /* 日志列表 */
   .log-list { flex:1; overflow-y:auto; padding:4px 0; -webkit-overflow-scrolling: touch; }
   .log-item {
     display:flex; align-items:flex-start;
-    padding:12px 16px; gap:14px;
+    padding:12px 14px; gap:12px;
     border-bottom:1px solid var(--border);
     cursor:pointer; transition:background .15s;
   }
-  .log-item:hover { background:var(--card-bg); }
-  .log-item:active { background:var(--card-bg); }
+  .log-item:hover, .log-item:active { background:var(--card-bg); }
 
   .log-date {
-    width:64px; flex-shrink:0; text-align:right;
+    width:60px; flex-shrink:0; text-align:right;
     display:flex; flex-direction:column; align-items:flex-end; gap:2px;
     padding-top:2px;
   }
@@ -128,7 +123,7 @@
   .log-thumb { width:44px; height:44px; border-radius:8px; object-fit:cover; flex-shrink:0; margin-left:8px; }
 
   .group-header {
-    padding:12px 16px 6px 16px;
+    padding:12px 14px 6px 14px;
     font-size:11px; font-weight:700; color:var(--muted);
     letter-spacing:1px; background:var(--bg);
     position:sticky; top:0; z-index:5;
@@ -136,17 +131,6 @@
 
   .empty-state { text-align:center; color:var(--muted); padding:80px 20px; font-size:13px; line-height:2; }
 
-  .fab {
-    position:fixed; bottom:24px; right:20px;
-    width:54px; height:54px; border-radius:50%;
-    background:var(--accent); color:#fff;
-    display:flex; align-items:center; justify-content:center;
-    font-size:26px; box-shadow:0 4px 15px rgba(59,130,246,.4);
-    cursor:pointer; z-index:30; transition:transform .15s; border:none;
-  }
-  .fab:active { transform:scale(.9); }
-
-  /* 弹窗 */
   .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:100; padding:20px; }
   .overlay.show{display:flex;}
   .modal{
@@ -166,7 +150,7 @@
   .modal input:focus, .modal textarea:focus { border-color:var(--accent); }
   .modal textarea { height:80px; resize:none; }
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .modal-actions{display:flex; gap:10px; margin-top:16px; align-items:center;}
+  .modal-actions{display:flex; gap:10px; margin-top:14px; align-items:center;}
   .btn{
     border:1px solid var(--border); background:var(--card-bg); color:var(--text);
     padding:10px 16px; border-radius:10px; font-size:14px; cursor:pointer;
@@ -195,16 +179,11 @@
     background:none; border:none; color:inherit; cursor:pointer;
     font-size:14px; padding:0; line-height:1; opacity:.7;
   }
-  .tag-pill .remove-tag:hover { opacity:1; }
-
-  /* 预设标签建议 */
-  .tag-suggestions {
-    display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;
-  }
+  .tag-suggestions { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
   .tag-suggestion {
     font-size:11px; padding:3px 10px; border-radius:10px;
     background:var(--tag-bg); color:var(--tag-text);
-    border:none; cursor:pointer; font-weight:600;
+    border:none; cursor:pointer; font-weight:600; font-family:inherit;
   }
 
   /* 文件上传 */
@@ -220,6 +199,30 @@
     border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; font-size:14px;
   }
   #mImage, #importFileInput { display:none; }
+
+  /* 同步弹窗专用 */
+  .sync-status {
+    padding: 10px 12px; border-radius: 10px; font-size: 12px;
+    background: var(--input-bg); border: 1px solid var(--border);
+    margin-bottom: 14px; line-height: 1.6; white-space: pre-wrap;
+  }
+  .sync-status.ok { border-color: #22c55e; background: rgba(34,197,94,.08); color: #22c55e; }
+  .sync-status.err { border-color: #ef4444; background: rgba(239,68,68,.08); color: #ef4444; }
+  .sync-status.info { border-color: var(--accent); background: rgba(59,130,246,.06); color: var(--accent); }
+  .checkbox-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0;
+  }
+  .checkbox-row input[type="checkbox"] { width: auto; }
+  .checkbox-row label { margin: 0; font-size: 13px; color: var(--text); cursor: pointer; }
+  .help-text {
+    font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.6;
+  }
+  .help-text code {
+    background: var(--input-bg); padding: 1px 5px; border-radius: 4px;
+    font-family: ui-monospace, monospace; font-size: 10px;
+  }
+  .help-text a { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -232,20 +235,17 @@
     </div>
     <div class="header-right">
       <button class="icon-btn primary" id="fabAdd">＋ 日志</button>
+      <button class="icon-btn" id="syncBtn" title="GitHub 同步">☁️</button>
       <button class="icon-btn" id="themeToggle" title="切换主题">🌓</button>
-      <button class="icon-btn" id="backupBtn" title="备份JSON">📥</button>
-      <button class="icon-btn" id="importBtn" title="导入JSON">📤</button>
-      <button class="icon-btn danger" id="resetBtn" title="重置">重置</button>
-      <input type="file" id="importFileInput" accept=".json">
+      <button class="icon-btn" id="settingsBtn" title="更多">⚙️</button>
     </div>
   </div>
 </div>
 
-<!-- 标签筛选栏 -->
 <div class="tag-bar" id="tagBar"></div>
-
 <div class="log-list" id="logList"></div>
 
+<!-- 日志编辑弹窗 -->
 <div class="overlay" id="overlay">
   <div class="modal">
     <div class="m-title" id="modalTitle">添加日志</div>
@@ -253,10 +253,10 @@
       <div class="field"><label>日期</label><input type="date" id="mDate"></div>
       <div class="field"><label>时间</label><input type="time" id="mTime"></div>
     </div>
-    <div class="field"><label>标题</label><input id="mTitle" placeholder="如：线上面试了科世达机械工程师"></div>
-    <div class="field"><label>详细记录（选填）</label><textarea id="mDesc" placeholder="记录详细过程、数据、结论…"></textarea></div>
+    <div class="field"><label>标题</label><input id="mTitle" placeholder="今天发生了什么"></div>
+    <div class="field"><label>详细记录（选填）</label><textarea id="mDesc" placeholder="记录详细过程…"></textarea></div>
     <div class="field">
-      <label>标签（回车确认，可多个，完全自定义）</label>
+      <label>标签（回车确认，可多个）</label>
       <div class="tag-input-wrap" id="tagInputWrap">
         <input id="tagInput" placeholder="输入标签…">
       </div>
@@ -279,10 +279,76 @@
   </div>
 </div>
 
+<!-- 设置弹窗 -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal" style="max-width:400px;">
+    <div class="m-title">⚙️ 设置</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <button class="btn" id="exportBtn">📊 导出 Excel（CSV）</button>
+      <button class="btn" id="backupBtn">📥 备份 JSON</button>
+      <button class="btn" id="importBtn">📤 导入 JSON</button>
+      <input type="file" id="importFileInput" accept=".json">
+      <button class="btn danger" id="resetBtn">⚠️ 重置全部数据</button>
+    </div>
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn" id="settingsCloseBtn" style="flex:1;">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- GitHub 同步弹窗 -->
+<div class="overlay" id="syncOverlay">
+  <div class="modal" style="max-width:480px;">
+    <div class="m-title">☁️ GitHub 同步</div>
+
+    <div class="sync-status" id="syncStatusBox">检查配置...</div>
+
+    <div class="field">
+      <label>GitHub Token（只存在本机）</label>
+      <input type="password" id="ghTokenInput" placeholder="ghp_xxxxxxxxxx 或 github_pat_xxx">
+      <div class="help-text">
+        去 <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>
+        生成 <b>Classic token</b>，只需勾选 <code>gist</code> 权限。
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Gist ID</label>
+      <input type="text" id="ghGistInput" placeholder="例如 a1b2c3d4e5f6...">
+      <div class="help-text">
+        <b>首次使用：</b>去 <a href="https://gist.github.com" target="_blank">gist.github.com</a> 创建 <b>Secret</b> Gist，
+        文件名填 <code>journal.json</code>，内容填 <code>{}</code>。地址栏最后一段就是 Gist ID。
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="autoSyncCheck">
+      <label for="autoSyncCheck">自动同步（每次修改后 3 秒自动上传）</label>
+    </div>
+
+    <div class="modal-actions" style="margin-top:10px;">
+      <button class="btn" id="testConnBtn">🔌 测试连接</button>
+      <button class="btn" id="syncPullBtn">⬇️ 拉取</button>
+      <button class="btn primary" id="syncPushBtn">⬆️ 推送</button>
+    </div>
+    <div class="modal-actions" style="margin-top:8px;">
+      <button class="btn" id="syncSaveConfigBtn" style="flex:1;">💾 保存配置</button>
+      <button class="btn" id="syncCloseBtn" style="flex:1;">关闭</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const STORAGE_KEY = 'timeline-log-v4';
+/* =========================================================
+   数据层
+   ========================================================= */
+const STORAGE_KEY = 'timeline-log-v5';
 const THEME_KEY = 'timeline-log-theme';
+const GH_TOKEN_KEY = 'timeline-log-gh-token';
+const GH_GIST_KEY = 'timeline-log-gh-gist';
+const AUTO_SYNC_KEY = 'timeline-log-auto-sync';
 const uid = () => Math.random().toString(36).slice(2, 10);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function defaultData() {
   const today = new Date();
@@ -299,24 +365,167 @@ function defaultData() {
 
 function loadState() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) { 
-      const d = JSON.parse(raw); 
-      if (d && d.logs) {
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('timeline-log-v4');
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (d && Array.isArray(d.logs)) {
         d.logs.forEach(l => { if (!l.tags) l.tags = []; });
-        return d; 
+        return d;
       }
     }
   } catch (e) {}
   return defaultData();
 }
-function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  if (autoSyncEnabled) schedulePush();
+}
 
 let state = loadState();
 let editingId = null;
 let currentFilterTag = null;
 let editingTags = [];
 
+/* =========================================================
+   GitHub 同步
+   ========================================================= */
+let ghToken = localStorage.getItem(GH_TOKEN_KEY) || '';
+let ghGistId = localStorage.getItem(GH_GIST_KEY) || '';
+let autoSyncEnabled = localStorage.getItem(AUTO_SYNC_KEY) === '1';
+let _isPushing = false;
+let _pushTimer = null;
+let _lastSyncTime = null;
+
+function setSyncStatus(msg, type) {
+  const box = document.getElementById('syncStatusBox');
+  if (!box) return;
+  box.textContent = msg;
+  box.className = 'sync-status ' + (type || '');
+}
+
+function schedulePush() {
+  if (_pushTimer) clearTimeout(_pushTimer);
+  _pushTimer = setTimeout(() => { pushToCloud({ silent: true }); }, 3000);
+}
+
+async function ghFetchGist() {
+  const res = await fetch(`https://api.github.com/gists/${ghGistId}`, {
+    headers: {
+      'Authorization': `token ${ghToken}`,
+      'Accept': 'application/vnd.github+json'
+    }
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`HTTP ${res.status}: ${txt.slice(0, 150)}`);
+  }
+  return res.json();
+}
+
+async function ghUpdateGist(content) {
+  const res = await fetch(`https://api.github.com/gists/${ghGistId}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `token ${ghToken}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      files: {
+        'journal.json': { content: content }
+      }
+    })
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`HTTP ${res.status}: ${txt.slice(0, 150)}`);
+  }
+  return res.json();
+}
+
+async function testConnection() {
+  if (!ghToken || !ghGistId) {
+    setSyncStatus('❌ 请先填写 Token 和 Gist ID', 'err');
+    return false;
+  }
+  try {
+    setSyncStatus('🔌 正在测试连接...', 'info');
+    const gist = await ghFetchGist();
+    const file = gist.files && gist.files['journal.json'];
+    if (!file) {
+      setSyncStatus('⚠️ 连接成功，但 Gist 里没有 journal.json 文件。请检查文件名。', 'info');
+      return false;
+    }
+    setSyncStatus(`✅ 连接成功！\n文件大小：${file.size} 字节\n最后更新：${new Date(gist.updated_at).toLocaleString()}`, 'ok');
+    return true;
+  } catch (e) {
+    setSyncStatus('❌ 连接失败：' + e.message, 'err');
+    return false;
+  }
+}
+
+async function pushToCloud(opts = {}) {
+  if (!ghToken || !ghGistId) {
+    if (!opts.silent) setSyncStatus('❌ 请先填写 Token 和 Gist ID', 'err');
+    return;
+  }
+  try {
+    _isPushing = true;
+    setSyncStatus('⏫ 上传中...', 'info');
+    const content = JSON.stringify(state, null, 2);
+    await ghUpdateGist(content);
+    _lastSyncTime = new Date();
+    setSyncStatus('✅ 已上传到 GitHub（' + _lastSyncTime.toLocaleTimeString() + '）', 'ok');
+  } catch (e) {
+    console.error(e);
+    setSyncStatus('❌ 上传失败：' + e.message, 'err');
+    if (!opts.silent) alert('上传失败：' + e.message);
+  } finally {
+    setTimeout(() => { _isPushing = false; }, 500);
+  }
+}
+
+async function pullFromCloud(opts = {}) {
+  if (!ghToken || !ghGistId) {
+    if (!opts.silent) setSyncStatus('❌ 请先填写 Token 和 Gist ID', 'err');
+    return;
+  }
+  try {
+    setSyncStatus('⏬ 拉取中...', 'info');
+    const gist = await ghFetchGist();
+    const file = gist.files && gist.files['journal.json'];
+    if (!file) {
+      setSyncStatus('⚠️ Gist 里没有 journal.json 文件', 'err');
+      return;
+    }
+    const raw = file.content || '';
+    if (!raw.trim() || raw.trim() === '{}') {
+      setSyncStatus('ℹ️ 云端还是空的（journal.json 内容是 {}），请先点「推送」上传。', 'info');
+      return;
+    }
+    const cloudData = JSON.parse(raw);
+    if (!cloudData.logs || !Array.isArray(cloudData.logs)) {
+      throw new Error('云端数据格式不对（不是日志数据）');
+    }
+    _isPushing = true;
+    state = cloudData;
+    state.logs.forEach(l => { if (!l.tags) l.tags = []; });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    render();
+    setTimeout(() => { _isPushing = false; }, 500);
+    _lastSyncTime = new Date();
+    setSyncStatus('✅ 已从 GitHub 同步（' + _lastSyncTime.toLocaleTimeString() + '）', 'ok');
+  } catch (e) {
+    console.error(e);
+    setSyncStatus('❌ 拉取失败：' + e.message, 'err');
+    if (!opts.silent) alert('拉取失败：' + e.message);
+  }
+}
+
+/* =========================================================
+   主题
+   ========================================================= */
 const themeBtn = document.getElementById('themeToggle');
 function applyTheme(theme) {
   if (theme === 'light') { document.body.classList.add('light'); document.body.classList.remove('dark'); }
@@ -338,6 +547,9 @@ themeBtn.onclick = () => {
 };
 themeBtn.textContent = (savedTheme === 'light') ? '☀️' : (savedTheme === 'dark') ? '🌙' : '🌓';
 
+/* =========================================================
+   渲染
+   ========================================================= */
 const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
 
 function formatDate(dateStr) {
@@ -350,13 +562,6 @@ function formatDate(dateStr) {
   return `${d.getMonth()+1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
 }
 
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-/* =========================================================
-   渲染标签栏
-   ========================================================= */
 function renderTagBar() {
   const tagBar = document.getElementById('tagBar');
   const tagCount = {};
@@ -366,12 +571,9 @@ function renderTagBar() {
     });
   });
   const tags = Object.keys(tagCount).sort();
-  
-  if (tags.length === 0) {
-    tagBar.innerHTML = '';
-    return;
-  }
-  
+
+  if (tags.length === 0) { tagBar.innerHTML = ''; return; }
+
   let html = `<button class="tag-chip ${currentFilterTag === null ? 'active' : ''}" data-tag="">全部</button>`;
   tags.forEach(tag => {
     html += `<button class="tag-chip ${currentFilterTag === tag ? 'active' : ''}" data-tag="${esc(tag)}">${esc(tag)} · ${tagCount[tag]}</button>`;
@@ -387,20 +589,17 @@ document.getElementById('tagBar').addEventListener('click', (e) => {
   render();
 });
 
-/* =========================================================
-   渲染日志列表
-   ========================================================= */
 function render() {
   renderTagBar();
-  
+
   const list = document.getElementById('logList');
   let filtered = state.logs;
   if (currentFilterTag) {
     filtered = filtered.filter(log => (log.tags || []).includes(currentFilterTag));
   }
-  
+
   if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty-state">' + 
+    list.innerHTML = '<div class="empty-state">' +
       (currentFilterTag ? `没有「${esc(currentFilterTag)}」标签的日志` : '还没有日志<br>点击右上角 ＋ 记录第一条吧 ✨') +
       '</div>';
     saveState();
@@ -420,11 +619,11 @@ function render() {
       html += `<div class="group-header">${formatDate(log.date)}</div>`;
       lastDate = log.date;
     }
-    
+
     const thumb = log.image ? `<img class="log-thumb" src="${log.image}" alt="">` : '';
     const desc = log.desc ? `<div class="log-desc">${esc(log.desc)}</div>` : '';
-    const tagsHtml = (log.tags && log.tags.length) 
-      ? `<div class="log-tags">${log.tags.map(t => `<span class="log-tag">${esc(t)}</span>`).join('')}</div>` 
+    const tagsHtml = (log.tags && log.tags.length)
+      ? `<div class="log-tags">${log.tags.map(t => `<span class="log-tag">${esc(t)}</span>`).join('')}</div>`
       : '';
     const d = new Date(log.date);
     html += `
@@ -443,7 +642,7 @@ function render() {
       </div>
     `;
   });
-  
+
   list.innerHTML = html;
   saveState();
 }
@@ -452,7 +651,7 @@ const now = new Date();
 document.getElementById('todayDisplay').textContent = `${now.getMonth()+1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
 
 /* =========================================================
-   弹窗（含标签编辑）
+   弹窗
    ========================================================= */
 const overlay = document.getElementById('overlay');
 const mDate = document.getElementById('mDate');
@@ -482,6 +681,7 @@ tagInputWrap.addEventListener('click', (e) => {
     const i = parseInt(e.target.dataset.i);
     editingTags.splice(i, 1);
     renderTagPills();
+    renderSuggestions();
   } else {
     tagInput.focus();
   }
@@ -544,7 +744,7 @@ function openModal(title, log = null) {
   tagInput.value = '';
   renderTagPills();
   renderSuggestions();
-  
+
   if (currentImageBase64) {
     imgPreview.src = currentImageBase64; imgPreviewContainer.style.display = 'block';
   } else {
@@ -596,10 +796,10 @@ document.getElementById('mSave').onclick = () => {
   const title = mTitle.value.trim();
   if (!title) { alert('请输入标题'); return; }
   if (!mDate.value) { alert('请选择日期'); return; }
-  
+
   const pending = tagInput.value.trim();
   if (pending && !editingTags.includes(pending)) editingTags.push(pending);
-  
+
   const logData = {
     date: mDate.value,
     time: mTime.value || '00:00',
@@ -633,8 +833,34 @@ document.getElementById('logList').addEventListener('click', (e) => {
 });
 
 /* =========================================================
-   JSON 备份与导入
+   设置弹窗
    ========================================================= */
+const settingsOverlay = document.getElementById('settingsOverlay');
+document.getElementById('settingsBtn').onclick = () => settingsOverlay.classList.add('show');
+document.getElementById('settingsCloseBtn').onclick = () => settingsOverlay.classList.remove('show');
+settingsOverlay.addEventListener('click', e => { if (e.target === settingsOverlay) settingsOverlay.classList.remove('show'); });
+
+document.getElementById('exportBtn').onclick = () => {
+  let csv = '\uFEFF日期,时间,标题,描述,标签\n';
+  const sorted = [...state.logs].sort((a, b) => b.date.localeCompare(a.date));
+  sorted.forEach(log => {
+    const clean = s => String(s || '').replace(/"/g, '""').replace(/\n/g, ' ');
+    csv += [
+      `"${log.date}"`,
+      `"${log.time || ''}"`,
+      `"${clean(log.title)}"`,
+      `"${clean(log.desc)}"`,
+      `"${clean((log.tags || []).join(' '))}"`
+    ].join(',') + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `时间线日志_${new Date().toISOString().slice(0,10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+};
+
 document.getElementById('backupBtn').onclick = () => {
   const dataStr = JSON.stringify(state, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
@@ -668,9 +894,6 @@ importFileInput.onchange = (e) => {
   importFileInput.value = '';
 };
 
-/* =========================================================
-   重置（需手动输入确认文字）
-   ========================================================= */
 document.getElementById('resetBtn').onclick = () => {
   const answer = prompt(
     '⚠️ 重置会清空所有日志数据，且不可恢复。\n\n' +
@@ -685,9 +908,79 @@ document.getElementById('resetBtn').onclick = () => {
   currentFilterTag = null;
   saveState();
   render();
+  settingsOverlay.classList.remove('show');
   alert('✅ 已重置为示例数据。');
 };
 
+/* =========================================================
+   GitHub 同步 UI
+   ========================================================= */
+const syncOverlay = document.getElementById('syncOverlay');
+const ghTokenInput = document.getElementById('ghTokenInput');
+const ghGistInput = document.getElementById('ghGistInput');
+const autoSyncCheck = document.getElementById('autoSyncCheck');
+
+document.getElementById('syncBtn').onclick = () => {
+  ghTokenInput.value = ghToken;
+  ghGistInput.value = ghGistId;
+  autoSyncCheck.checked = autoSyncEnabled;
+  if (!ghToken || !ghGistId) {
+    setSyncStatus('ℹ️ 首次使用，请按下面的说明配置：\n1. 生成 GitHub Token（只需 gist 权限）\n2. 创建一个 Gist，文件名 journal.json，内容 {}\n3. 把 Token 和 Gist ID 填进来，点「保存配置」\n4. 点「推送」上传当前数据', 'info');
+  } else if (_lastSyncTime) {
+    setSyncStatus('✅ 上次同步：' + _lastSyncTime.toLocaleString(), 'ok');
+  } else {
+    setSyncStatus('ℹ️ 已配置。可点「测试连接」验证，或直接「推送」。', 'info');
+  }
+  syncOverlay.classList.add('show');
+};
+
+document.getElementById('syncCloseBtn').onclick = () => syncOverlay.classList.remove('show');
+syncOverlay.addEventListener('click', e => { if (e.target === syncOverlay) syncOverlay.classList.remove('show'); });
+
+document.getElementById('syncSaveConfigBtn').onclick = () => {
+  ghToken = ghTokenInput.value.trim();
+  ghGistId = ghGistInput.value.trim();
+  localStorage.setItem(GH_TOKEN_KEY, ghToken);
+  localStorage.setItem(GH_GIST_KEY, ghGistId);
+  setSyncStatus('✅ 配置已保存到本机。可点「测试连接」验证。', 'ok');
+};
+
+document.getElementById('testConnBtn').onclick = () => {
+  ghToken = ghTokenInput.value.trim();
+  ghGistId = ghGistInput.value.trim();
+  localStorage.setItem(GH_TOKEN_KEY, ghToken);
+  localStorage.setItem(GH_GIST_KEY, ghGistId);
+  testConnection();
+};
+
+autoSyncCheck.onchange = () => {
+  autoSyncEnabled = autoSyncCheck.checked;
+  localStorage.setItem(AUTO_SYNC_KEY, autoSyncEnabled ? '1' : '0');
+  if (autoSyncEnabled && ghToken && ghGistId) {
+    pushToCloud({ silent: true });
+  }
+};
+
+document.getElementById('syncPushBtn').onclick = () => {
+  ghToken = ghTokenInput.value.trim();
+  ghGistId = ghGistInput.value.trim();
+  localStorage.setItem(GH_TOKEN_KEY, ghToken);
+  localStorage.setItem(GH_GIST_KEY, ghGistId);
+  pushToCloud();
+};
+
+document.getElementById('syncPullBtn').onclick = () => {
+  ghToken = ghTokenInput.value.trim();
+  ghGistId = ghGistInput.value.trim();
+  localStorage.setItem(GH_TOKEN_KEY, ghToken);
+  localStorage.setItem(GH_GIST_KEY, ghGistId);
+  if (!confirm('拉取会用云端数据覆盖本地，确定吗？')) return;
+  pullFromCloud();
+};
+
+/* =========================================================
+   初始化
+   ========================================================= */
 render();
 </script>
 </body>
